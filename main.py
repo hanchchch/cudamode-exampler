@@ -1,4 +1,5 @@
 import logging
+import sys
 
 from src.example_models import models
 from src.llm import LLM, Input
@@ -17,8 +18,9 @@ The answer format should be like below:
 ```
 """
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+logger = logging.getLogger()
 
 
 def write_functions(reference_model: str):
@@ -41,6 +43,10 @@ def write_functions(reference_model: str):
             md += response
             f.write(response)
 
+    logger.info(
+        f"Generated markdown file: outputs/learn_from_{reference_model}.md (token usage: {llm.usage})"
+    )
+
     snippets = [s for s in md.split("###") if s != ""]
     logger.info(f"Generated {len(snippets)} snippets")
     for snippet in snippets:
@@ -53,8 +59,7 @@ def write_functions(reference_model: str):
             logger.warning(f"Failed to parse snippet, model output: {snippet}")
             continue
 
-    return llm.usage
 
-
-u = write_functions("albert")
-print(u)
+if __name__ == "__main__":
+    for model in models.keys():
+        write_functions(model)
