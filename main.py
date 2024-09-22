@@ -11,6 +11,7 @@ output_dir = "outputs"
 output_md_dir = "outputs/md"
 output_py_dir = "outputs/py"
 
+ITERATIONS = 10
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger()
@@ -31,4 +32,6 @@ if __name__ == "__main__":
                 logger.warning(f"Invalid python code: {filepath}")
                 os.remove(filepath)
                 continue
-        break
+
+        if ITERATIONS is not None and i == ITERATIONS:
+            break
