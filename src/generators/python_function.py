@@ -48,28 +48,29 @@ logger = logging.getLogger()
 def write_functions(
     reference_model: str, output_md_dir: str, output_py_dir: str
 ) -> list[str]:
-    md_path = f"{output_md_dir}/learn_from_{reference_model}.md"
-
-    i = Input()
-    llm = LLM()
-
-    modelfiles = models[reference_model]
-
-    for filename, content in modelfiles.items():
-        prompt = f"file: {filename}\n{content}"
-        i.add(prompt)
-    i.add(prompt_write_functions)
-
-    logger.info(
-        f"Generating functions based on {reference_model} ({len(modelfiles)} files)"
-    )
     md = ""
-    with open(md_path, "w") as f:
-        for response in llm.generate(i):
-            md += response
-            f.write(response)
+    md_path = f"{output_md_dir}/learn_from_{reference_model}.md"
+    if os.path.exists(md_path):
+        md = open(md_path, "r").read()
+    else:
+        i = Input()
+        llm = LLM()
 
-    logger.info(f"Generated markdown file: {md_path} (token usage: {llm.usage})")
+        modelfiles = models[reference_model]
+        for filename, content in modelfiles.items():
+            prompt = f"file: {filename}\n{content}"
+            i.add(prompt)
+        i.add(prompt_write_functions)
+
+        logger.info(
+            f"Generating functions based on {reference_model} ({len(modelfiles)} files)"
+        )
+        with open(md_path, "w") as f:
+            for response in llm.generate(i):
+                md += response
+                f.write(response)
+
+        logger.info(f"Generated markdown file: {md_path} (token usage: {llm.usage})")
 
     filepaths = []
     snippets = [s for s in md.split("###") if s != ""]

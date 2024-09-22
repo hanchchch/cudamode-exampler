@@ -11,6 +11,7 @@ ignore = [
     "E6",
     "E7",
     "E8",  # ignore all but potential runtime errors
+    "F401",  # ignore unused imports
     "W",  # ignore all warnings
 ]
 

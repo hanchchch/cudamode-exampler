@@ -3,18 +3,24 @@ import logging
 from src.llm import LLM, Input
 
 prompt_write_signature = """Read a function, and write a function signature for that.
-It should specify the function's name, parameter's names, dimensions for the tensors, and data types.
+It should specify the function's name, shapes for the input and output tensors, and data types.
 
 Contstraints:
 1. It should be in the following format:
 ```python
-function_signature = [
-    '<function_name>',
-    ('<parameter_name>', <dimension_tuple>, <dtype>),
-]
+function_signature = {{
+    "name": "<function_name>",
+    "inputs": [
+        (<shape_tuple>, <dtype>),
+        (<shape_tuple>, <dtype>)
+    ],
+    "outputs": [
+        (<shape_tuple>, <dtype>),
+    ]
+}}
 ```
 
-2. Each shape of the dimensions should be greater than or equal to 4.
+2. Each shape should be greater than or equal to 4.
 (4, 4) is the minimum shape for the tensors.
 
 For example, consider the following function:
@@ -28,11 +34,16 @@ def linear_transformation_activation(input_tensor: torch.Tensor, weight: torch.T
     
 The function signature for the above function would be:
 ```python
-function_signature = [
-    'linear_transformation_activation',
-    ('input_tensor', (4, 4), torch.float32),
-    ('weight', (4, 4), torch.float32)
-]
+function_signature = {{
+    "name": "linear_transformation_activation",
+    "inputs": [
+        ((4, 4), torch.float32),
+        ((4, 4), torch.float32)
+    ],
+    "outputs": [
+        ((4, 4), torch.float32),
+    ]
+}}
 ```
 
 Now, write a signature for below function. Do not repeat the function, just the signature.
