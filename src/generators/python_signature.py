@@ -5,13 +5,17 @@ from src.llm import LLM, Input
 prompt_write_signature = """Read a function, and write a function signature for that.
 It should specify the function's name, parameter's names, dimensions for the tensors, and data types.
 
-It should be in the following format:
+Contstraints:
+1. It should be in the following format:
 ```python
 function_signature = [
     '<function_name>',
     ('<parameter_name>', <dimension_tuple>, <dtype>),
 ]
 ```
+
+2. Each shape of the dimensions should be greater than or equal to 4.
+(4, 4) is the minimum shape for the tensors.
 
 For example, consider the following function:
 ```python
